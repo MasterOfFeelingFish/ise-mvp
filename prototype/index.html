@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISE MVP 原型导航</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-900">
+  <div class="max-w-4xl mx-auto px-6 py-20">
+    <!-- Header -->
+    <div class="text-center mb-16">
+      <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-teal-500 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
+      </div>
+      <h1 class="text-4xl font-bold text-gray-900 mb-2">ISE MVP 原型</h1>
+      <p class="text-xl text-gray-500">Identity-Shift Engine 可视化原型</p>
+      <p class="text-sm text-gray-400 mt-2">明快简洁设计 · 直接浏览器预览</p>
+    </div>
+
+    <!-- Navigation Cards -->
+    <div class="grid md:grid-cols-2 gap-6">
+      <!-- Dashboard -->
+      <a href="dashboard.html" class="group block p-8 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:border-teal-300 transition-all duration-300 hover:-translate-y-1">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900 group-hover:text-teal-600 transition-colors">Dashboard</h2>
+            <p class="text-gray-500 text-sm">指挥中心 · 7 模块布局</p>
+          </div>
+        </div>
+        <p class="text-gray-400 text-sm">
+          包含 Identity Header、今日焦点、Momentum Matrix、Auditor Console 等核心模块
+        </p>
+      </a>
+
+      <!-- Onboarding -->
+      <a href="onboarding.html" class="group block p-8 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:border-orange-300 transition-all duration-300 hover:-translate-y-1">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">Onboarding</h2>
+            <p class="text-gray-500 text-sm">身份锚定 · 3-5 轮对话</p>
+          </div>
+        </div>
+        <p class="text-gray-400 text-sm">
+          选择题式交互，收集 Identity、Vision、Anti-Vision
+        </p>
+      </a>
+
+      <!-- Task Detail Modal -->
+      <a href="task-detail.html" class="group block p-8 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:border-purple-300 transition-all duration-300 hover:-translate-y-1">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">任务详情</h2>
+            <p class="text-gray-500 text-sm">模态框 · Friction Points</p>
+          </div>
+        </div>
+        <p class="text-gray-400 text-sm">
+          势能状态、上次质变日期、阻力点、Vision 映射
+        </p>
+      </a>
+
+      <!-- Governor Dialog -->
+      <a href="governor.html" class="group block p-8 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-lg hover:border-red-300 transition-all duration-300 hover:-translate-y-1">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900 group-hover:text-red-600 transition-colors">Governor 拒绝</h2>
+            <p class="text-gray-500 text-sm">智能贪心管控</p>
+          </div>
+        </div>
+        <p class="text-gray-400 text-sm">
+          当红色任务 >= 2 时拒绝新增目标
+        </p>
+      </a>
+    </div>
+
+    <!-- Design System Info -->
+    <div class="mt-16 p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">设计系统</h3>
+      <div class="grid md:grid-cols-2 gap-6 text-sm">
+        <div>
+          <h4 class="text-gray-500 mb-2">色彩（明快简洁）</h4>
+          <div class="flex gap-2">
+            <div class="w-8 h-8 rounded bg-white border border-gray-200" title="背景"></div>
+            <div class="w-8 h-8 rounded bg-gray-50" title="次级背景"></div>
+            <div class="w-8 h-8 rounded bg-teal-500" title="主色"></div>
+            <div class="w-8 h-8 rounded bg-orange-500" title="CTA"></div>
+            <div class="w-8 h-8 rounded bg-green-500" title="进展中"></div>
+            <div class="w-8 h-8 rounded bg-yellow-500" title="停滞"></div>
+            <div class="w-8 h-8 rounded bg-red-500" title="危险"></div>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-gray-500 mb-2">技术栈</h4>
+          <p class="text-gray-700">Next.js 14 + Tailwind CSS + Lucide Icons + Vercel AI SDK</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-12 text-center text-gray-400 text-sm">
+      <p>ISE MVP 可视化原型 · 基于 Dan Koe "1 Day Protocol"</p>
+    </div>
+  </div>
+</body>
+</html>
