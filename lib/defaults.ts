@@ -35,11 +35,7 @@ export const defaultIdentity: Identity = {
 
 export const defaultTasks: Task[] = [];
 
-export const defaultExecutionLog = [
-  { date: formatDate(new Date(Date.now() - 2 * 24 * 3600 * 1000)), completed: 1, total: 4 },
-  { date: formatDate(new Date(Date.now() - 1 * 24 * 3600 * 1000)), completed: 2, total: 4 },
-  { date: formatDate(new Date()), completed: 2, total: 4 }
-];
+export const defaultExecutionLog = [];
 
 export const defaultState: AppState = {
   identity: undefined,
