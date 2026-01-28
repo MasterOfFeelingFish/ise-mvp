@@ -61,7 +61,7 @@ export async function POST(request: Request) {
       system,
       prompt,
       temperature: 0.5,
-      maxTokens: 120
+      maxOutputTokens: 120
     });
 
     const json = extractJson(text);

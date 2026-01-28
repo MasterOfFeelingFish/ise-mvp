@@ -75,7 +75,7 @@ export async function POST(request: Request) {
       system,
       prompt,
       temperature: 0.6,
-      maxTokens: 120
+      maxOutputTokens: 120
     });
 
     let parsed: VisionResponse | null = null;

@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       system,
       prompt,
       temperature: 0.5,
-      maxTokens: 150
+      maxOutputTokens: 150
     });
 
     return NextResponse.json({ reply: text.trim() });
