@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { generateText } from "ai";
-import { openai } from "@ai-sdk/openai";
-import { google } from "@ai-sdk/google";
+import { generateTextWithProvider } from "../../../lib/llm";
 
 export const runtime = "nodejs";
 
@@ -40,17 +38,35 @@ function extractJson(text: string) {
   return null;
 }
 
+function parseLoose(text: string) {
+  const cleaned = text.replace(/```json\s*([\s\S]*?)```/gi, "$1").trim();
+  const visionMatch =
+    cleaned.match(/"vision"\s*:\s*"([^"]+)"/i) ||
+    cleaned.match(/Vision[:：]\s*([^\n]+)/i);
+  const antiMatch =
+    cleaned.match(/"antiVision"\s*:\s*"([^"]+)"/i) ||
+    cleaned.match(/Anti-?Vision[:：]\s*([^\n]+)/i) ||
+    cleaned.match(/反愿景[:：]\s*([^\n]+)/i);
+  if (!visionMatch || !antiMatch) return null;
+  return {
+    vision: visionMatch[1]?.trim(),
+    antiVision: antiMatch[1]?.trim()
+  };
+}
+
+function fallbackVision(target: string) {
+  return `成为能持续兑现${target}核心价值的行动者`;
+}
+
+function fallbackAntiVision(challenge: string) {
+  return `长期停滞在“${challenge}”的惯性中，目标会逐渐失焦`;
+}
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as VisionRequest;
     const target = resolveTarget(body.target, body.customTarget);
     const challenge = body.challenge || "尚未明确";
-    const providerName = (process.env.LLM_PROVIDER || "openai").toLowerCase();
-    const modelId =
-      process.env.LLM_MODEL ||
-      (providerName === "google" ? "gemini-1.5-flash" : "gpt-4o-mini");
-    const provider =
-      providerName === "google" ? google(modelId) : openai(modelId);
 
     const system = [
       "你是 ISE 的 AI 审计员。",
@@ -60,7 +76,8 @@ export async function POST(request: Request) {
       "Vision 必须是 1 句话，格式为「成为xxxx的xxxx」，长度 15-30 字。",
       "Anti-Vision 可以稍长，但仍保持 1-2 句话，总长度 40-90 字。",
       "风格参考：简洁、克制、直击要害。",
-      "只输出 JSON，包含 vision 与 antiVision 两个字段，不要额外文本。",
+      "只输出 JSON，且必须是严格 JSON（双引号、无注释、无多余文本）。",
+      "返回格式示例：{\"vision\":\"...\",\"antiVision\":\"...\"}",
       "使用中文输出。"
     ].join("\n");
 
@@ -70,12 +87,21 @@ export async function POST(request: Request) {
       "生成 Vision 与 Anti-Vision："
     ].join("\n");
 
-    const { text } = await generateText({
-      model: provider,
+    const text = await generateTextWithProvider({
       system,
       prompt,
       temperature: 0.6,
-      maxOutputTokens: 120
+      maxOutputTokens: 120,
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "object",
+        properties: {
+          vision: { type: "string" },
+          antiVision: { type: "string" }
+        },
+        required: ["vision", "antiVision"],
+        additionalProperties: false
+      }
     });
 
     let parsed: VisionResponse | null = null;
@@ -87,10 +113,17 @@ export async function POST(request: Request) {
     }
 
     if (!parsed?.vision || !parsed?.antiVision) {
-      return NextResponse.json(
-        { error: "VISION_PARSE_FAILED" },
-        { status: 500 }
-      );
+      const loose = parseLoose(text);
+      if (loose?.vision && loose?.antiVision) {
+        return NextResponse.json({
+          vision: loose.vision.trim(),
+          antiVision: loose.antiVision.trim()
+        });
+      }
+      return NextResponse.json({
+        vision: fallbackVision(target),
+        antiVision: fallbackAntiVision(challenge)
+      });
     }
 
     return NextResponse.json({

@@ -1,9 +1,5 @@
 import { NextResponse } from "next/server";
-import { generateText } from "ai";
-import { openai } from "@ai-sdk/openai";
-import { google } from "@ai-sdk/google";
-
-export const runtime = "nodejs";
+import { generateTextWithProvider } from "../../../lib/llm";
 
 type AuditorRequest = {
   message: string;
@@ -14,19 +10,9 @@ type AuditorRequest = {
   focusTask?: string;
 };
 
-function pickProvider() {
-  const providerName = (process.env.LLM_PROVIDER || "openai").toLowerCase();
-  const modelId =
-    process.env.LLM_MODEL ||
-    (providerName === "google" ? "gemini-1.5-flash" : "gpt-4o-mini");
-  return providerName === "google" ? google(modelId) : openai(modelId);
-}
-
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as AuditorRequest;
-    const provider = pickProvider();
-
     const system = [
       "你是 ISE 的 AI 审计员。你的职责是：",
       "1. 身份锚定：始终将用户的 Identity Target 作为对话锚点",
@@ -47,8 +33,7 @@ export async function POST(request: Request) {
       "请回复："
     ].join("\n");
 
-    const { text } = await generateText({
-      model: provider,
+    const text = await generateTextWithProvider({
       system,
       prompt,
       temperature: 0.5,

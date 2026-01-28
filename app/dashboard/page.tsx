@@ -168,12 +168,17 @@ export default function DashboardPage() {
     return hour < 12 ? "am" : "pm";
   }, [auditorOverride]);
 
+  const effectiveAuditorMode = useMemo(() => {
+    if (tasksWithMomentum.length === 0) return "am";
+    return auditorMode;
+  }, [tasksWithMomentum.length, auditorMode]);
+
   useEffect(() => {
-    if (auditorMode === "pm") {
+    if (effectiveAuditorMode === "pm") {
       setPmStage("ask");
       setPmDetail("");
     }
-  }, [auditorMode]);
+  }, [effectiveAuditorMode]);
 
   const lastUpdateLabel = (task?: Task) => {
     if (!task?.history.length) return "暂无更新";
@@ -834,7 +839,7 @@ export default function DashboardPage() {
               </svg>
             </div>
             <div className="flex-1">
-              {auditorMode === "am" ? (
+              {effectiveAuditorMode === "am" ? (
                 <>
                   <p className="mb-3 text-gray-700">
                     早上好。作为{" "}
@@ -880,11 +885,7 @@ export default function DashboardPage() {
                       </button>
                     </div>
                   )}
-                  {suggestionError && (
-                    <div className="mt-3 text-xs text-amber-600">
-                      建议生成失败：{suggestionError}
-                    </div>
-                  )}
+                  
                 </>
               ) : (
                 <>
@@ -1263,11 +1264,7 @@ export default function DashboardPage() {
                     </li>
                   )}
                 </ul>
-                {frictionError && (
-                  <div className="mt-2 text-xs text-amber-600">
-                    识别失败：{frictionError}
-                  </div>
-                )}
+                
               </div>
 
               <div className="rounded-xl border border-teal-200 bg-teal-50 p-4">

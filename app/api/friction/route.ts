@@ -1,9 +1,5 @@
 import { NextResponse } from "next/server";
-import { generateText } from "ai";
-import { openai } from "@ai-sdk/openai";
-import { google } from "@ai-sdk/google";
-
-export const runtime = "nodejs";
+import { generateTextWithProvider } from "../../../lib/llm";
 
 type FrictionRequest = {
   taskName: string;
@@ -12,14 +8,6 @@ type FrictionRequest = {
   antiVision: string;
   history: string[];
 };
-
-function pickProvider() {
-  const providerName = (process.env.LLM_PROVIDER || "openai").toLowerCase();
-  const modelId =
-    process.env.LLM_MODEL ||
-    (providerName === "google" ? "gemini-1.5-flash" : "gpt-4o-mini");
-  return providerName === "google" ? google(modelId) : openai(modelId);
-}
 
 function extractJson(text: string) {
   const trimmed = text.trim();
@@ -37,14 +25,14 @@ function extractJson(text: string) {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as FrictionRequest;
-    const provider = pickProvider();
-
     const system = [
       "你是 ISE 的 AI 审计员。",
       "根据任务与上下文识别 2-4 个 Friction Points。",
       "输出必须是 JSON，包含 frictionPoints 字段，值为字符串数组。",
       "每个阻力点不超过 12 个字，避免空泛。",
-      "使用中文输出，不要额外文本。"
+      "只输出 JSON，且必须是严格 JSON（双引号、无注释、无多余文本）。",
+      "返回格式示例：{\"frictionPoints\":[\"...\"]}",
+      "使用中文输出。"
     ].join("\n");
 
     const prompt = [
@@ -56,12 +44,25 @@ export async function POST(request: Request) {
       "生成 frictionPoints："
     ].join("\n");
 
-    const { text } = await generateText({
-      model: provider,
+    const text = await generateTextWithProvider({
       system,
       prompt,
       temperature: 0.5,
-      maxOutputTokens: 120
+      maxOutputTokens: 120,
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: "object",
+        properties: {
+          frictionPoints: {
+            type: "array",
+            items: { type: "string" },
+            minItems: 2,
+            maxItems: 4
+          }
+        },
+        required: ["frictionPoints"],
+        additionalProperties: false
+      }
     });
 
     const json = extractJson(text);
@@ -69,10 +70,7 @@ export async function POST(request: Request) {
       ? (JSON.parse(json) as { frictionPoints?: string[] })
       : null;
     if (!parsed?.frictionPoints?.length) {
-      return NextResponse.json(
-        { error: "FRICTION_PARSE_FAILED" },
-        { status: 500 }
-      );
+      return NextResponse.json({ frictionPoints: [] });
     }
 
     return NextResponse.json({

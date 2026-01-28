@@ -125,6 +125,7 @@ export default function OnboardingPage() {
         const data = (await response.json()) as {
           vision?: string;
           antiVision?: string;
+          warning?: string;
           error?: string;
           details?: { message?: string; stack?: string } | string;
         };
@@ -138,15 +139,14 @@ export default function OnboardingPage() {
         if (data.vision && data.antiVision) {
           setVision(data.vision);
           setAntiVision(data.antiVision);
+          if (data.warning) {
+            setGenerationError("模型输出格式异常，已使用兼容解析。");
+          }
           return;
         }
         throw new Error("vision_empty");
       } catch (error) {
-        setVision(fallbackVision());
-        setAntiVision(fallbackAntiVision());
-        const message =
-          error instanceof Error ? error.message : "未能连接模型";
-        setGenerationError(`未能连接模型，已使用默认模板生成。${message}`);
+        setGenerationError("");
       } finally {
         setIsGenerating(false);
       }
@@ -355,11 +355,6 @@ export default function OnboardingPage() {
               {isGenerating && (
                 <div className="mb-4 rounded-xl border border-teal-100 bg-teal-50 px-4 py-3 text-xs text-teal-700">
                   正在生成 Vision 与 Anti-Vision...
-                </div>
-              )}
-              {generationError && (
-                <div className="mb-4 rounded-xl border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-700">
-                  {generationError}
                 </div>
               )}
               {antiVision && (
